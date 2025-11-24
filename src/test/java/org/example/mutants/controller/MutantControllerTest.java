@@ -79,27 +79,28 @@ class MutantControllerTest {
                 .andExpect(jsonPath("$.ratio").value(0.4));
     }
 
-    // 4) POST /mutant con body vacío → tu API lo trata como humano → 403
+    // 4) POST /mutant con body vacío → ahora es inválido → 400 Bad Request
     @Test
-    @DisplayName("POST /mutant con body vacío debería devolver 403 Forbidden")
-    void postMutantWithEmptyBodyShouldReturn403() throws Exception {
+    @DisplayName("POST /mutant con body vacío debería devolver 400 Bad Request")
+    void postMutantWithEmptyBodyShouldReturn400() throws Exception {
         mockMvc.perform(post("/mutant")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isBadRequest());
     }
 
-    // 5) POST /mutant con dna = null → también termina en 403 (no mutante)
+    // 5) POST /mutant con dna = null → también es inválido → 400 Bad Request
     @Test
-    @DisplayName("POST /mutant con dna null debería devolver 403 Forbidden")
-    void postMutantWithNullDnaShouldReturn403() throws Exception {
+    @DisplayName("POST /mutant con dna null debería devolver 400 Bad Request")
+    void postMutantWithNullDnaShouldReturn400() throws Exception {
         String json = "{\"dna\":null}";
 
         mockMvc.perform(post("/mutant")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isBadRequest());
     }
+
 
     // 6) GET /stats cuando no hay registros → 200 y todos 0
     @Test
