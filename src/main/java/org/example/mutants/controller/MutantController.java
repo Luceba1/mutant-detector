@@ -22,11 +22,18 @@ public class MutantController {
     private final StatsService statsService;
 
     @PostMapping("/mutant")
-    public ResponseEntity<Void> isMutant(@RequestBody @Valid DnaRequest request) {
+    public ResponseEntity<?> isMutant(@RequestBody @Valid DnaRequest request) {
         boolean isMutant = mutantService.process(request.getDna());
-        return isMutant
-                ? ResponseEntity.ok().build()
-                : ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
+        if (isMutant) {
+            return ResponseEntity.ok().body(
+                    java.util.Map.of("mutant", true)
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+                    java.util.Map.of("mutant", false)
+            );
+        }
     }
 
     @GetMapping("/stats")
